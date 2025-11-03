@@ -1,9 +1,11 @@
 from retinopathy import app
-import os
+from flask import Flask
+from flask import render_template
 
+# This is the object Gunicorn looks for
+app = Flask(__name__)
 
-port = int(os.environ.get("PORT", 8080))
-
-
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=port, debug=True)
+@app.route('/')
+@app.route('/home')
+def home():
+    return render_template('home.html')
