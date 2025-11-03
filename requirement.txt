@@ -1,0 +1,17 @@
+Flask
+Flask-Login
+Flask-SQLAlchemy
+Flask-Bcrypt
+Flask-Migrate
+Flask-WTF
+WTForms
+opencv-python
+numpy
+torch
+torchvision
+Pillow
+efficientnet-pytorch
+albumentations
+timm
+gunicorn
+python-dotenv

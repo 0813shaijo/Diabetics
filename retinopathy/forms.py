@@ -1,0 +1,57 @@
+from flask_wtf import FlaskForm
+from flask_login import current_user
+from wtforms import IntegerField, StringField, PasswordField, SubmitField, BooleanField, FileField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from retinopathy.modules import Patient, User
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=20)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Sign Up')
+     
+    def validate_username(self, username):
+            user = User.query.filter_by(username = username.data).first()
+            if user:
+                 raise ValidationError('username already exists')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user:
+            raise ValidationError('That email is already taken. Please choose a different one.')
+
+class LoginForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=20)])
+    remember = BooleanField('Remember Me')
+    submit = SubmitField('Login')
+
+class UpdateAccountForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('update')
+
+class PatientForm(FlaskForm):
+    #user_id = StringField('User ID', validators=[DataRequired()])
+    patient_id = StringField('Patient ID', validators=[DataRequired()])
+    name = StringField('Name', validators=[DataRequired(), Length(min=2, max=100)])
+    age = IntegerField('Age', validators=[DataRequired()])
+    sex = StringField('Sex', validators=[DataRequired()])
+    right_eye_image = FileField('Right Eye Image', validators=[DataRequired()])
+    left_eye_image = FileField('Left Eye Image', validators=[DataRequired()])
+    right_eye_diagnosis = StringField('Right Eye Diagnosis')
+    left_eye_diagnosis = StringField('Left Eye Diagnosis')
+    processed_right_eye_image = FileField('Processed Right Eye Image')
+    processed_left_eye_image = FileField('Processed Left Eye Image')
+    RightEye_prediction = StringField('Right Eye Prediction')
+    LeftEye_prediction = StringField('Left Eye Prediction')
+    
+    
+    submit = SubmitField('Add Patient')
+
+
+    def validate_patient_id(self, patient_id):
+        patient = Patient.query.filter_by(patient_id=patient_id.data, user_id=current_user.id).first()
+        if patient :
+            raise ValidationError('Patient ID already exists. Please choose a different one.')
